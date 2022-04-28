@@ -24,6 +24,7 @@ async function run() {
   try {
     await client.connect();
     const blogCollection = client.db("blogUser").collection("blogs");
+    const commentCollection = client.db("blogUser").collection("comments");
 
     // ! GET BLOGS
     app.get("/blogs", async (req, res) => {
@@ -42,10 +43,16 @@ async function run() {
     });
 
     // !POST BLOG
-    app.post("/blogs", async (req, res) => {
+    app.post("/blog", async (req, res) => {
       const newBlog = req.body;
-      console.log("Adding", newBlog);
       const result = await blogCollection.insertOne(newBlog);
+      res.send(result);
+    });
+
+    // !POST Comment
+    app.post("/comment", async (req, res) => {
+      const newComment = req.body;
+      const result = await commentCollection.insertOne(newComment);
       res.send(result);
     });
   } finally {
