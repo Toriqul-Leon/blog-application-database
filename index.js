@@ -25,11 +25,20 @@ async function run() {
     await client.connect();
     const blogCollection = client.db("blogUser").collection("blogs");
 
+    // ! GET BLOGS
     app.get("/blogs", async (req, res) => {
       const query = {};
       const cursor = blogCollection.find(query);
       const blogs = await cursor.toArray();
       res.send(blogs);
+    });
+
+    // !POST BLOG
+    app.post("/blogs", async (req, res) => {
+      const newBlog = req.body;
+      console.log("Adding", newBlog);
+      const result = await blogCollection.insertOne(newBlog);
+      res.send(result);
     });
   } finally {
     // await client.close();
