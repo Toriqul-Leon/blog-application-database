@@ -4,7 +4,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 const app = express();
 var cors = require("cors");
-const res = require("express/lib/response");
+
 const port = process.env.PORT || 5000;
 
 // !Middleware
@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Server Running");
 });
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.nmtuj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
