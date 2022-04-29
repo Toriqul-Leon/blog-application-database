@@ -1,5 +1,6 @@
 const express = require("express");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+
 require("dotenv").config();
 const app = express();
 var cors = require("cors");
@@ -28,9 +29,20 @@ async function run() {
 
     // ! GET BLOGS
     app.get("/blogs", async (req, res) => {
+      const page = parseInt(req.query.page);
+      const size = parseInt(req.query.size);
+      console.log(page, size);
       const query = {};
       const cursor = blogCollection.find(query);
-      const blogs = await cursor.toArray();
+      let blogs;
+      if (page || size) {
+        blogs = await cursor
+          .skip(page * size)
+          .limit(size)
+          .toArray();
+      } else {
+        blogs = await cursor.toArray();
+      }
       res.send(blogs);
     });
 
@@ -62,6 +74,12 @@ async function run() {
       const cursor = commentCollection.find(query).sort({ $natural: -1 });
       const comments = await cursor.toArray();
       res.send(comments);
+    });
+
+    // !Pagination
+    app.get("/blogCount", async (req, res) => {
+      const count = await blogCollection.estimatedDocumentCount();
+      res.send({ count });
     });
   } finally {
     // await client.close();
