@@ -55,6 +55,14 @@ async function run() {
       const result = await commentCollection.insertOne(newComment);
       res.send(result);
     });
+
+    // !GET comment
+    app.get("/comments", async (req, res) => {
+      const query = {};
+      const cursor = commentCollection.find(query).sort({ $natural: -1 });
+      const comments = await cursor.toArray();
+      res.send(comments);
+    });
   } finally {
     // await client.close();
   }
